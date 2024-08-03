@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEditor.Rendering.ShadowCascadeGUI;
 
 public class CharacterController2D : MonoBehaviour
@@ -8,8 +9,12 @@ public class CharacterController2D : MonoBehaviour
     private int ANIMATION_SPEED;
     private int ANIMATION_FORCE;
     private int ANIMATION_FALL;
-    
+    private int ANIMATION_PUNCH;
+    private int ANIMATION_UPPERCUT;
+    private int ANIMATION_DIE;
 
+
+    [Header("Movement")]
     [SerializeField]
     float walkSpeed;
 
@@ -31,6 +36,20 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField]
     bool isFacingRight;
 
+    [Header("Attacks")]
+    [SerializeField]
+    Transform punchPoint;
+
+    [SerializeField]
+    float punchRadius;
+
+    [SerializeField]
+    LayerMask attackMask;
+
+    [SerializeField]
+    float _dieAnimationTime;
+
+
     Rigidbody2D _rigidbody;
     Animator _animator;
 
@@ -51,6 +70,9 @@ public class CharacterController2D : MonoBehaviour
         ANIMATION_SPEED = Animator.StringToHash("speed");
         ANIMATION_FORCE = Animator.StringToHash("force");
         ANIMATION_FALL = Animator.StringToHash("fall");
+        ANIMATION_PUNCH = Animator.StringToHash("punch");
+        ANIMATION_DIE = Animator.StringToHash("die");
+        //ANIMATION_UPPERCUT = Animator.StringToHash("uppercut");
     }
 
     private void Start()
@@ -172,4 +194,40 @@ public class CharacterController2D : MonoBehaviour
         yield return new WaitUntil(() => IsGrounded());
         _isGrounded = true;
     }
+
+    public void Punch(float damage, bool isPercentage)
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(punchPoint.position, punchRadius,attackMask);
+        foreach (Collider2D collider in colliders)
+        {
+            DamageableController controller = collider.GetComponent<DamageableController>();
+
+            if(controller == null)
+                continue;
+
+            controller.TakeDamage(damage, isPercentage);
+        }
+
+    }
+
+    public void Punch()
+    {
+        _animator.SetTrigger(ANIMATION_PUNCH);
+        
+
+    }
+
+    public void Die()
+    {
+        StartCoroutine(DieCoroutine()); 
+    }
+
+    private IEnumerator DieCoroutine()
+    {
+        _animator.SetTrigger(ANIMATION_DIE);
+        yield return new WaitForSeconds(_dieAnimationTime);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+    }
+
 }
