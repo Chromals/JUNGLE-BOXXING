@@ -224,14 +224,23 @@ public class CharacterController2D : MonoBehaviour
 
     public void RangeAttack(float damage, bool isPercentage)
     {
-        GameObject bullet = Instantiate(powerbombPrefab, punchPoint.position, transform.rotation);
+        GameObject powerbomb = Instantiate(powerbombPrefab, punchPoint.position, transform.rotation);
+
+
+        bool facingRight = _inputX > 0.0F;
+        if (isFacingRight != facingRight)
+        {
+
+            powerbomb.transform.Rotate(0.0F, 180.0F, 0.0F);
+        }
+
 
         Vector2 direction = (punchPoint.position - transform.position).normalized;
 
-        PowerbombController controller = bullet.GetComponent<PowerbombController>();
+        PowerbombController controller = powerbomb.GetComponent<PowerbombController>();
         controller.SetDirection(direction);
 
-        Destroy(bullet, 2000.0F); //2.0F porque eso es lo que dura la animacion
+        //Destroy(powerbomb, 2000.0F); //2.0F porque eso es lo que dura la animacion
 
     }
 

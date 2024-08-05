@@ -20,7 +20,7 @@ public class PowerbombController : MonoBehaviour
     bool isPercentage;
 
     Rigidbody2D _rb;
-
+    float _aliveTime = 1.95F;
     Vector2 _direction;
 
 
@@ -36,8 +36,15 @@ public class PowerbombController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        if (_aliveTime <= 0.0F)
+        {
+
+           Destroy(gameObject);
+        }
+        else
+            _aliveTime -= Time.deltaTime;
 
     }
 
