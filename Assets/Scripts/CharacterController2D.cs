@@ -49,6 +49,11 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField]
     float _dieAnimationTime;
 
+    
+
+    [SerializeField]
+    GameObject powerbombPrefab;
+
 
     Rigidbody2D _rigidbody;
     Animator _animator;
@@ -72,7 +77,7 @@ public class CharacterController2D : MonoBehaviour
         ANIMATION_FALL = Animator.StringToHash("fall");
         ANIMATION_PUNCH = Animator.StringToHash("punch");
         ANIMATION_DIE = Animator.StringToHash("die");
-        //ANIMATION_UPPERCUT = Animator.StringToHash("uppercut");
+        ANIMATION_UPPERCUT = Animator.StringToHash("uppercut");
     }
 
     private void Start()
@@ -215,6 +220,24 @@ public class CharacterController2D : MonoBehaviour
         _animator.SetTrigger(ANIMATION_PUNCH);
         
 
+    }
+
+    public void RangeAttack(float damage, bool isPercentage)
+    {
+        GameObject bullet = Instantiate(powerbombPrefab, punchPoint.position, transform.rotation);
+
+        Vector2 direction = (punchPoint.position - transform.position).normalized;
+
+        PowerbombController controller = bullet.GetComponent<PowerbombController>();
+        controller.SetDirection(direction);
+
+        Destroy(bullet, 2000.0F); //2.0F porque eso es lo que dura la animacion
+
+    }
+
+    public void RangeAttack()
+    {
+        _animator.SetTrigger(ANIMATION_UPPERCUT);
     }
 
     public void Die()

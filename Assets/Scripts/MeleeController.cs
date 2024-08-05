@@ -31,6 +31,8 @@ public class MeleeController : MonoBehaviour
         {
             if (Input.GetButtonUp("Fire1"))
                 _character.Punch();
+            else if (Input.GetButtonUp("Fire2"))
+                _character.RangeAttack();
         }
             
            

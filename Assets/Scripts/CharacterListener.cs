@@ -22,4 +22,9 @@ public class CharacterListener : MonoBehaviour
     {
         _character.Punch(damage,isPercentage);
     }
+
+    public void OnRangedAttack()
+    {
+        _character.RangeAttack(damage, isPercentage);
+    }
 }
